@@ -189,15 +189,40 @@
   .footer-bottom { background: var(--dark); text-align: center; padding: 16px 5vw; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.74rem; color: rgba(255,255,255,0.3); }
 
 
+  /* ── HERO SLIDESHOW ── */
+  .hero-img-frame { position: relative; }
+  .hero-slide {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 1s ease;
+    border-radius: 17px; overflow: hidden;
+  }
+  .hero-slide.active { opacity: 1; position: relative; }
+  .hero-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .slide-dots {
+    display: flex; gap: 6px; justify-content: center; margin-top: 8px;
+  }
+  .slide-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,0.35); border: none; cursor: pointer;
+    transition: background .3s, transform .3s; padding: 0;
+  }
+  .slide-dot.active { background: #FCD34D; transform: scale(1.3); }
+
+  /* ── ABOUT IMAGE GRID WITH SLIDESHOW ── */
+  .about-img-grid .img-box { position: relative; overflow: hidden; }
+  .about-slide {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 1.2s ease;
+  }
+  .about-slide.active { opacity: 1; }
+  .about-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .about-slide-init { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+
+
   /* ── GALLERY ITEM WITH LABEL ── */
   .g-link { position: relative; text-decoration: none; display: block; }
-  .g-label {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%);
-    color: #fff; font-size: 0.82rem; font-weight: 500;
-    padding: 24px 12px 10px;
-    border-radius: 0 0 14px 14px;
-  }
+  .g-label { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%); color: #fff; font-size: 0.82rem; font-weight: 500; padding: 24px 12px 10px; border-radius: 0 0 14px 14px; }
   .g-link img { transition: transform .3s; }
   .g-link:hover img { transform: scale(1.05); }
   .gallery-strip .g-item { overflow: hidden; }
@@ -258,7 +283,7 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <img src="Logo_CMU_-_Jpg__1__jpg.jpeg" alt="Logo YCMU" onerror="this.style.display='none'">
+    <img src="images/logo.jpeg" alt="Logo YCMU" onerror="this.style.display='none'">
     <span>Yayasan Cahaya<br>Mutiara Ubud</span>
   </a>
   <ul class="nav-links">
@@ -285,11 +310,15 @@
     </div>
   </div>
   <div class="hero-visual">
-    <div class="hero-img-frame">
-      <div class="ph" style="width:100%;height:100%;background:linear-gradient(135deg,rgba(255,255,255,0.1),rgba(255,255,255,0.05))">
-        <span style="font-size:5rem;opacity:0.3">🌟</span>
-      </div>
+    <div class="hero-img-frame" id="heroFrame">
+      <div class="hero-slide active"><img src="images/hero-kesenian.jpg" alt="Tari Bali YCMU"></div>
+      <div class="hero-slide"><img src="images/hero-olahraga.jpg" alt="Prestasi Olahraga"></div>
+      <div class="hero-slide"><img src="images/hero-lukisan.jpg" alt="Lukisan YCMU"></div>
+      <div class="hero-slide"><img src="images/hero-berkebun.jpg" alt="Kebun Organik"></div>
+      <div class="hero-slide"><img src="images/kesenian-2.jpg" alt="Group Tari Bali"></div>
+      <div class="hero-slide"><img src="images/olahraga-4.jpg" alt="Para Games Podium"></div>
     </div>
+    <div class="slide-dots" id="heroDots"></div>
     <div class="hero-stats">
       <div class="stat-card">
         <span class="num">2014</span>
@@ -323,9 +352,24 @@
     </p>
   </div>
   <div class="about-img-grid">
-    <div class="img-box ph" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE)">🌿</div>
-    <div class="img-box ph" style="background:linear-gradient(135deg,#DDD6FE,#C4B5FD)">🎨</div>
-    <div class="img-box ph" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A)">🏆</div>
+    <div class="img-box" id="aboutMain">
+      <img class="about-slide-init" src="images/hero-berkebun.jpg" alt="Berkebun">
+      <div class="about-slide"><img src="images/berkebun-2.jpg" alt="Berkebun bersama"></div>
+      <div class="about-slide"><img src="images/berkebun-3.jpg" alt="Panen terong"></div>
+      <div class="about-slide"><img src="images/pendidikan-3.jpg" alt="Kelas YCMU"></div>
+    </div>
+    <div class="img-box" id="aboutTop">
+      <img class="about-slide-init" src="images/hero-lukisan.jpg" alt="Lukisan Penari Bali">
+      <div class="about-slide"><img src="images/lukisan-4.jpg" alt="Lukisan Ganesha"></div>
+      <div class="about-slide"><img src="images/lukisan-2.jpg" alt="Lukisan Ikan Koi"></div>
+      <div class="about-slide"><img src="images/hero-kopi.jpg" alt="Cahaya Mutiara Coffee"></div>
+    </div>
+    <div class="img-box" id="aboutBot">
+      <img class="about-slide-init" src="images/hero-olahraga.jpg" alt="Marathon 1st Podium">
+      <div class="about-slide"><img src="images/olahraga-4.jpg" alt="Para Games Podium"></div>
+      <div class="about-slide"><img src="images/hero-kesenian.jpg" alt="Tari Bali"></div>
+      <div class="about-slide"><img src="images/kesenian-3.jpg" alt="Fire Dance"></div>
+    </div>
   </div>
 </section>
 
@@ -398,37 +442,34 @@
 
 <!-- GALLERY STRIP -->
 <section id="galeri" style="padding:64px 0">
-  <div class="inner" style="padding:0 5vw;margin-bottom:32px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px">
-    <div>
-      <span class="section-tag" data-nav="galtag">Galeri Kegiatan</span>
-      <h2 class="section-title" data-nav="galhead">Momen yang Berbicara</h2>
-    </div>
-    <a href="galeri.html" class="nav-cta" style="text-decoration:none;white-space:nowrap" data-nav="galviewall">Lihat Semua Foto →</a>
+  <div class="inner">
+    <span class="section-tag" data-nav="galtag">Galeri Kegiatan</span>
+    <h2 class="section-title" data-nav="galhead">Momen yang Berbicara</h2>
   </div>
   <div class="gallery-strip">
     <a href="galeri.html#lukisan" class="g-item g-link">
       <img src="images/hero-lukisan.jpg" alt="Lukisan">
-      <span class="g-label">🎨 Lukisan</span>
+      <span class="g-label">🎨 <span data-nav="tabl">Lukisan</span></span>
     </a>
     <a href="galeri.html#berkebun" class="g-item g-link">
       <img src="images/hero-berkebun.jpg" alt="Berkebun">
-      <span class="g-label">🌱 Berkebun</span>
+      <span class="g-label">🌱 <span data-nav="tabb">Berkebun</span></span>
     </a>
     <a href="galeri.html#olahraga" class="g-item g-link">
       <img src="images/hero-olahraga.jpg" alt="Olahraga">
-      <span class="g-label">🏅 Olahraga</span>
+      <span class="g-label">🏅 <span data-nav="tabo">Olahraga</span></span>
     </a>
     <a href="galeri.html#kesenian" class="g-item g-link">
       <img src="images/hero-kesenian.jpg" alt="Kesenian">
-      <span class="g-label">🎭 Kesenian</span>
+      <span class="g-label">🎭 <span data-nav="tabk">Kesenian</span></span>
     </a>
     <a href="galeri.html#pendidikan" class="g-item g-link">
       <img src="images/hero-pendidikan.jpg" alt="Pendidikan">
-      <span class="g-label">📚 Pendidikan</span>
+      <span class="g-label">📚 <span data-nav="tabp">Pendidikan</span></span>
     </a>
     <a href="galeri.html#kopi" class="g-item g-link">
       <img src="images/hero-kopi.jpg" alt="Kopi CMU">
-      <span class="g-label">☕ Kopi CMU</span>
+      <span class="g-label">☕ <span data-nav="tabko">Kopi CMU</span></span>
     </a>
   </div>
   <p style="text-align:center;margin-top:20px;font-size:0.8rem;color:var(--mid);padding:0 5vw">
@@ -468,7 +509,7 @@
         <div class="loc-icon">✉️</div>
         <div>
           <h4>Email</h4>
-          <p><a href="/cdn-cgi/l/email-protection#50333d257e363f253e343124393f3e10373d31393c7e333f3d"><span class="__cf_email__" data-cfemail="40232d356e262f352e242134292f2e00272d21292c6e232f2d">[email&#160;protected]</span></a></p>
+          <p><a href="/cdn-cgi/l/email-protection#f99a948cd79f968c979d988d909697b99e94989095d79a9694"><span class="__cf_email__" data-cfemail="20434d550e464f554e444154494f4e60474d41494c0e434f4d">[email&#160;protected]</span></a></p>
         </div>
       </div>
       <div class="loc-item">
@@ -502,7 +543,7 @@
       <a href="https://wa.me/6282247037772" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;font-weight:500;text-decoration:none">
         💬 <span data-nav="watext">WhatsApp Kami</span>
       </a>
-      <a href="/cdn-cgi/l/email-protection#50333d257e363f253e343124393f3e10373d31393c7e333f3d" style="display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;font-weight:500;text-decoration:none">
+      <a href="/cdn-cgi/l/email-protection#0c6f6179226a637962686d786563624c6b616d6560226f6361" style="display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;font-weight:500;text-decoration:none">
         ✉️ <span data-nav="emailtext">Email Kami</span>
       </a>
     </div>
@@ -537,7 +578,7 @@
         </div>
       </div>
       <div class="donation-divider"><span data-nav="orvia">atau hubungi kami via</span></div>
-      <a href="/cdn-cgi/l/email-protection#66050b1348000913080207120f090826010b070f0a4805090b591513040c0305125b22090807120f09084354560009144354563f252b33400409021f5b2e030a0a094354254354562f4354561109130a024354560a0f0d03435456120943545602090807120343545612094354563f071f0715070843545625070e071f074354562b13120f0714074354563304130248" class="paypal-btn">
+      <a href="/cdn-cgi/l/email-protection#640709114a020b110a0005100d0b0a240309050d084a070b095b1711060e01071059200b0a05100d0b0a415654020b164156543d27293142060b001d592c0108080b4156274156542d415654130b110800415654080d0f01415654100b415654000b0a051001415654100b4156543d051d0517050a41565427050c051d054156542911100d051605415654310611004a" class="paypal-btn">
         ✉️ <span data-nav="confirmemail">Konfirmasi Donasi via Email</span>
       </a>
       <div class="contact-box">
@@ -556,7 +597,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-brand">
-    <img src="Logo_CMU_-_Jpg__1__jpg.jpeg" alt="Logo YCMU" onerror="this.style.display='none'">
+    <img src="images/logo.jpeg" alt="Logo YCMU" onerror="this.style.display='none'">
     <p data-nav="footerdesc">Yayasan Cahaya Mutiara Ubud — organisasi non-profit untuk penyandang disabilitas di Bali, berdiri sejak 2014. Semangat Bersatu Menggapai Impian.</p>
   </div>
   <div class="footer-col">
@@ -575,7 +616,7 @@
     <ul>
       <li><a href="tel:+62361902195">(0361) 902195</a></li>
       <li><a href="tel:+6282247037772">+62 822 4703 7772</a></li>
-      <li><a href="/cdn-cgi/l/email-protection#2d4e4058034b425843494c594442436d4a404c4441034e4240"><span class="__cf_email__" data-cfemail="03606e762d656c766d6762776a6c6d43646e626a6f2d606c6e">[email&#160;protected]</span></a></li>
+      <li><a href="/cdn-cgi/l/email-protection#82e1eff7ace4edf7ece6e3f6ebedecc2e5efe3ebeeace1edef"><span class="__cf_email__" data-cfemail="f0939d85de969f859e949184999f9eb0979d91999cde939f9d">[email&#160;protected]</span></a></li>
       <li><a href="https://www.instagram.com/cahayamutiaraubud" target="_blank">@cahayamutiaraubud</a></li>
     </ul>
   </div>
@@ -628,8 +669,7 @@ const translations = {
     footerdesc:"Yayasan Cahaya Mutiara Ubud — organisasi non-profit untuk penyandang disabilitas di Bali, berdiri sejak 2014. Semangat Bersatu Menggapai Impian.",
     footerprog:"Program", footercontact:"Kontak",
     p1title2:"Asrama", p2title2:"Pendidikan", p3title2:"Seni & Budaya", p4title2:"Olahraga", p5title2:"Ekonomi & Kerajinan", p6title2:"Kebun Organik",
-    rights:"Semua hak dilindungi.", madewith:"Dibuat dengan ♥ untuk penyandang disabilitas Bali.",
-    galviewall:"Lihat Semua Foto →"
+    rights:"Semua hak dilindungi.", madewith:"Dibuat dengan ♥ untuk penyandang disabilitas Bali."
   },
   en: {
     about:"About Us", programs:"Programs", achievements:"Achievements", gallery:"Gallery", location:"Location", donate:"Donate", donatenow:"Donate Now",
@@ -882,9 +922,83 @@ const translations = {
     donatedesc:"Ihre Spende hilft, das Wohnheim, die Bildung, die Kunstausbildung und die Unabhängigkeitsprogramme für Menschen mit Behinderungen bei Yayasan Cahaya Mutiara Ubud zu finanzieren.",
     donatenote:"Unsere Stiftung arbeitet ohne feste Spender. Ihre Unterstützung — egal wie viel — bedeutet uns sehr viel.<br><br><strong style='color:var(--dark)'>Stiftungsnummer:</strong> AHU-0000897.AH.01.04.TAHUN 2015<br><strong style='color:var(--dark)'>Akkreditierungsnummer:</strong> 512.SA-LKS.B/2020",
     watext:"WhatsApp kontaktieren", emailtext:"E-Mail senden",
-    banktitle:"Banküberweisung", bankname:"Bank", bankbranch:"Filiale", bankname2:"Kontoinhaber", bankacct:"Kontonummer",
-    orvia:"oder kontaktieren Sie uns über", confirmemail:"Spende per E-Mail bestätigen",
-    footerdesc:"Yayasan Cahaya Mutiara Ubud — gemeinnützige Organisation für Menschen mit Behinderungen auf Bali, seit 2014. Gemeinsam im Geist, unsere Träume zu verwirklichen.",
-    footerprog:"Programme", footercontact:"Kontakt",
-    p1title2:"Wohnheim", p2title2:"Bildung", p3title2:"Kunst & Kultur", p4title2:"Sport", p5title2:"Wirtschaft & Handwerk", p6title2:"Biogarten",
-    rights:"Alle Rechte vorbehalten.", madewith:"
+    banktitle:"Banküberweisung", bankname:"Bank", bankbranch:"Filiale", bankname2:"Kontoinhaber", bankacct:"KontLang(lang) {
+  const t = translations[lang];
+  if (!t) return;
+
+  // Update all elements with data-nav
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    const key = el.getAttribute('data-nav');
+    if (t[key] !== undefined) {
+      el.innerHTML = t[key];
+    }
+  });
+
+  // Update active button
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  // Update html lang
+  document.documentElement.lang = lang;
+}
+// ═══════════════════════════════════════════════
+// SLIDESHOW ENGINE
+// ═══════════════════════════════════════════════
+(function() {
+
+  // ── HERO SLIDESHOW ──
+  var heroSlides = document.querySelectorAll('#heroFrame .hero-slide');
+  var dotsWrap   = document.getElementById('heroDots');
+  var heroIdx = 0;
+
+  if (heroSlides.length && dotsWrap) {
+    heroSlides.forEach(function(_, i) {
+      var d = document.createElement('button');
+      d.className = 'slide-dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('aria-label', 'Slide ' + (i+1));
+      d.onclick = function() { goHero(i); };
+      dotsWrap.appendChild(d);
+    });
+
+    function goHero(n) {
+      heroSlides[heroIdx].classList.remove('active');
+      dotsWrap.children[heroIdx].classList.remove('active');
+      heroIdx = (n + heroSlides.length) % heroSlides.length;
+      heroSlides[heroIdx].classList.add('active');
+      dotsWrap.children[heroIdx].classList.add('active');
+    }
+    setInterval(function() { goHero(heroIdx + 1); }, 3500);
+  }
+
+  // ── ABOUT PANEL SLIDESHOWS ──
+  function makeAboutSlider(wrapId, interval, offset) {
+    var wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    var init = wrap.querySelector('.about-slide-init');
+    var slides = wrap.querySelectorAll('.about-slide');
+    if (!slides.length) return;
+    var idx = -1; // -1 = init image showing
+
+    setTimeout(function() {
+      setInterval(function() {
+        // Hide current
+        if (idx === -1) { if (init) init.style.opacity = '0'; }
+        else { slides[idx].classList.remove('active'); }
+        // Advance
+        idx = (idx + 1) % slides.length;
+        // Show next
+        slides[idx].classList.add('active');
+        if (init && idx === 0 && slides.length > 0) init.style.opacity = '0';
+      }, interval);
+    }, offset);
+  }
+
+  makeAboutSlider('aboutMain', 4000, 800);
+  makeAboutSlider('aboutTop',  4000, 2200);
+  makeAboutSlider('aboutBot',  4000, 3600);
+
+})();
+
+</script>
+</body>
+</html>
