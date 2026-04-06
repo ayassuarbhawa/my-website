@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galeri – Yayasan Cahaya Mutiara Ubud</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #6B21A8;
+    --purple-deep: #4C1D95;
+    --purple-light: #EDE9FE;
+    --gold: #D97706;
+    --gold-light: #FEF3C7;
+    --white: #FAFAF9;
+    --dark: #1C1917;
+    --mid: #57534E;
+    --border: #E7E5E4;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--dark); }
+
+  /* ── LANG BAR ── */
+  .lang-bar {
+    background: var(--purple-deep); padding: 6px 5vw;
+    display: flex; align-items: center; justify-content: flex-end; gap: 4px; flex-wrap: wrap;
+  }
+  .lang-btn {
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.75); border-radius: 5px; padding: 3px 10px;
+    font-size: 0.72rem; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all .15s;
+  }
+  .lang-btn:hover, .lang-btn.active { background: rgba(255,255,255,0.25); color: #fff; border-color: rgba(255,255,255,0.5); }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,250,249,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo img { height: 40px; }
+  .nav-logo span { font-family: 'Playfair Display', serif; font-size: 0.9rem; font-weight: 700; color: var(--purple-deep); line-height: 1.2; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--mid); font-size: 0.83rem; font-weight: 500; transition: color .2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--purple); }
+  .nav-cta { background: var(--purple); color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-size: 0.83rem; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; text-decoration: none; transition: background .2s; }
+  .nav-cta:hover { background: var(--purple-deep); }
+
+  /* ── PAGE HERO ── */
+  .page-hero {
+    background: linear-gradient(135deg, var(--purple-deep), var(--purple));
+    padding: 60px 5vw 48px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .page-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 100%, rgba(217,119,6,0.15) 0%, transparent 60%);
+  }
+  .page-hero h1 {
+    font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem);
+    color: #fff; margin-bottom: 10px; position: relative;
+  }
+  .page-hero p { color: rgba(255,255,255,0.75); font-size: 0.97rem; position: relative; }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.82rem;
+    margin-bottom: 20px; position: relative; transition: color .2s;
+  }
+  .back-link:hover { color: #fff; }
+
+  /* ── CATEGORY TABS ── */
+  .cat-tabs {
+    position: sticky; top: 64px; z-index: 90;
+    background: var(--white); border-bottom: 1px solid var(--border);
+    display: flex; gap: 0; overflow-x: auto; scrollbar-width: none;
+    padding: 0 5vw;
+  }
+  .cat-tabs::-webkit-scrollbar { display: none; }
+  .cat-tab {
+    flex-shrink: 0;
+    padding: 14px 20px; font-size: 0.83rem; font-weight: 500;
+    color: var(--mid); text-decoration: none; border-bottom: 2px solid transparent;
+    transition: color .2s, border-color .2s; white-space: nowrap;
+  }
+  .cat-tab:hover { color: var(--purple); }
+  .cat-tab.active { color: var(--purple); border-bottom-color: var(--purple); }
+
+  /* ── CATEGORY SECTION ── */
+  .cat-section { padding: 60px 5vw; border-bottom: 1px solid var(--border); }
+  .cat-section:last-child { border-bottom: none; }
+  .cat-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+  .cat-icon { width: 52px; height: 52px; background: var(--purple-light); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+  .cat-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--dark); }
+  .cat-header p { font-size: 0.87rem; color: var(--mid); margin-top: 3px; }
+
+  /* ── PHOTO GRID ── */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .photo-grid.grid-featured {
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 280px 200px;
+  }
+  .photo-grid.grid-featured .photo-item:first-child { grid-row: 1 / 3; }
+
+  .photo-item {
+    border-radius: 14px; overflow: hidden; cursor: pointer;
+    position: relative; background: var(--purple-light);
+    aspect-ratio: 4/3;
+  }
+  .photo-grid.grid-featured .photo-item { aspect-ratio: unset; height: 100%; }
+  .photo-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .35s ease;
+    display: block;
+  }
+  .photo-item:hover img { transform: scale(1.05); }
+  .photo-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+    padding: 28px 14px 12px;
+    color: #fff; font-size: 0.78rem; opacity: 0;
+    transition: opacity .25s;
+  }
+  .photo-item:hover .photo-caption { opacity: 1; }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.92); align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 88vh; object-fit: contain; border-radius: 8px; }
+  .lightbox-close {
+    position: fixed; top: 20px; right: 24px;
+    color: #fff; font-size: 2rem; cursor: pointer; z-index: 1000;
+    background: rgba(255,255,255,0.1); border: none;
+    border-radius: 50%; width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+  .lightbox-prev, .lightbox-next {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.12); border: none; color: #fff;
+    font-size: 1.5rem; cursor: pointer; border-radius: 50%;
+    width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .lightbox-prev:hover, .lightbox-next:hover { background: rgba(255,255,255,0.25); }
+  .lightbox-prev { left: 16px; }
+  .lightbox-next { right: 16px; }
+  .lightbox-counter {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.6); font-size: 0.8rem;
+  }
+
+  /* ── FOOTER ── */
+  .footer-simple {
+    background: var(--dark); color: rgba(255,255,255,0.4);
+    text-align: center; padding: 24px 5vw;
+    font-size: 0.8rem;
+  }
+  .footer-simple a { color: var(--purple-light); text-decoration: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    nav .nav-links { display: none; }
+    .photo-grid.grid-featured { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .photo-grid.grid-featured .photo-item:first-child { grid-row: unset; }
+    .photo-grid.grid-featured .photo-item { aspect-ratio: 4/3; height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('id',this)">🇮🇩 Indonesia</button>
+  <button class="lang-btn" onclick="setLang('en',this)">🇬🇧 English</button>
+  <button class="lang-btn" onclick="setLang('ko',this)">🇰🇷 한국어</button>
+  <button class="lang-btn" onclick="setLang('ja',this)">🇯🇵 日本語</button>
+  <button class="lang-btn" onclick="setLang('zh',this)">🇨🇳 中文</button>
+  <button class="lang-btn" onclick="setLang('fr',this)">🇫🇷 Français</button>
+  <button class="lang-btn" onclick="setLang('de',this)">🇩🇪 Deutsch</button>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="images/logo.jpeg" alt="Logo YCMU" onerror="this.style.display='none'">
+    <span>Yayasan Cahaya<br>Mutiara Ubud</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#tentang" data-nav="about">Tentang Kami</a></li>
+    <li><a href="index.html#program" data-nav="programs">Program</a></li>
+    <li><a href="index.html#prestasi" data-nav="achievements">Prestasi</a></li>
+    <li><a href="galeri.html" class="active" data-nav="gallery">Galeri</a></li>
+    <li><a href="index.html#lokasi" data-nav="location">Lokasi</a></li>
+    <li><a href="index.html#donasi" data-nav="donate">Donasi</a></li>
+  </ul>
+  <a href="index.html#donasi" class="nav-cta" data-nav="donatenow">Donasi Sekarang</a>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <a href="index.html" class="back-link">← <span data-nav="backhome">Kembali ke Beranda</span></a>
+  <h1 data-nav="gallerytitle">Galeri Kegiatan</h1>
+  <p data-nav="gallerysubtitle">Dokumentasi kegiatan dan karya Yayasan Cahaya Mutiara Ubud</p>
+</div>
+
+<!-- CATEGORY TABS -->
+<div class="cat-tabs">
+  <a href="#lukisan" class="cat-tab">🎨 <span data-nav="tabl">Lukisan</span></a>
+  <a href="#kesenian" class="cat-tab">🎭 <span data-nav="tabk">Kesenian</span></a>
+  <a href="#olahraga" class="cat-tab">🏅 <span data-nav="tabo">Olahraga</span></a>
+  <a href="#berkebun" class="cat-tab">🌱 <span data-nav="tabb">Berkebun</span></a>
+  <a href="#pendidikan" class="cat-tab">📚 <span data-nav="tabp">Pendidikan</span></a>
+  <a href="#kopi" class="cat-tab">☕ <span data-nav="tabko">Kopi CMU</span></a>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- LUKISAN -->
+<!-- ═══════════════════════════════════ -->
+<section class="cat-section" id="lukisan">
+  <div class="cat-header">
+    <div class="cat-icon">🎨</div>
+    <div>
+      <h2 data-nav="tabl2">Lukisan</h2>
+      <p data-nav="lukisandesc">Karya seni lukis original oleh anggota Yayasan Cahaya Mutiara Ubud</p>
+    </div>
+  </div>
+  <div class="photo-grid grid-featured">
+    <div class="photo-item" onclick="openLightbox('lukisan',0)">
+      <img src="images/hero-lukisan.jpg" alt="Lukisan Penari Bali">
+      <div class="photo-caption" data-nav="luk1cap">Dua Penari Bali — cat akrilik di kanvas</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('lukisan',1)">
+      <img src="images/lukisan-2.jpg" alt="Lukisan Ikan Koi">
+      <div class="photo-caption" data-nav="luk2cap">Ikan Koi — cat pastel di linen</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('lukisan',2)">
+      <img src="images/lukisan-3.jpg" alt="Lukisan Kucing Merah">
+      <div class="photo-caption" data-nav="luk3cap">Kucing Merah — cat akrilik</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('lukisan',3)">
+      <img src="images/lukisan-4.jpg" alt="Lukisan Ganesha">
+      <div class="photo-caption" data-nav="luk4cap">Ganesha — cat akrilik di kanvas</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('lukisan',4)">
+      <img src="images/lukisan-5.jpg" alt="Lukisan Perempuan Bali">
+      <div class="photo-caption" data-nav="luk5cap">Perempuan Bali — cat akrilik</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ -->
+<!-- KESENIAN -->
+<!-- ═══════════════════════════════════ -->
+<section class="cat-section" id="kesenian" style="background:#F5F3FF">
+  <div class="cat-header">
+    <div class="cat-icon">🎭</div>
+    <div>
+      <h2 data-nav="tabk2">Kesenian</h2>
+      <p data-nav="kesenlandesc">Tari Bali, fire dance, dan kelas jembe bersama anggota yayasan</p>
+    </div>
+  </div>
+  <div class="photo-grid grid-featured">
+    <div class="photo-item" onclick="openLightbox('kesenian',0)">
+      <img src="images/hero-kesenian.jpg" alt="Pentas Tari Bali">
+      <div class="photo-caption" data-nav="kes1cap">Pentas Tari Bali di atas panggung</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('kesenian',1)">
+      <img src="images/kesenian-2.jpg" alt="Group Tari Bali">
+      <div class="photo-caption" data-nav="kes2cap">Group Tari Bali YCMU</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('kesenian',2)">
+      <img src="images/kesenian-3.jpg" alt="Fire Dance">
+      <div class="photo-caption" data-nav="kes3cap">Pentas Fire Dance</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('kesenian',3)">
+      <img src="images/kesenian-4.jpg" alt="Kelas Jembe">
+      <div class="photo-caption" data-nav="kes4cap">Kelas Jembe bersama instruktur</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ -->
+<!-- OLAHRAGA -->
+<!-- ═══════════════════════════════════ -->
+<section class="cat-section" id="olahraga">
+  <div class="cat-header">
+    <div class="cat-icon">🏅</div>
+    <div>
+      <h2 data-nav="tabo2">Olahraga</h2>
+      <p data-nav="olahragadesc">Prestasi atlet penyandang disabilitas di tingkat nasional dan internasional</p>
+    </div>
+  </div>
+  <div class="photo-grid grid-featured">
+    <div class="photo-item" onclick="openLightbox('olahraga',0)">
+      <img src="images/hero-olahraga.jpg" alt="Maybank Marathon 1st Podium">
+      <div class="photo-caption" data-nav="ol1cap">Maybank Bali Marathon — 1st Podium Wheelchair Female</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('olahraga',1)">
+      <img src="images/olahraga-2.jpg" alt="Marathon Medal">
+      <div class="photo-caption" data-nav="ol2cap">Meraih medali di Bali Marathon</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('olahraga',2)">
+      <img src="images/olahraga-3.jpg" alt="ASEAN Para Games 2023">
+      <div class="photo-caption" data-nav="ol3cap">ASEAN Para Games 2023 — Kamboja</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('olahraga',3)">
+      <img src="images/olahraga-4.jpg" alt="ASEAN Para Games Podium">
+      <div class="photo-caption" data-nav="ol4cap">Podium juara ASEAN Para Games 2023</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ -->
+<!-- BERKEBUN -->
+<!-- ═══════════════════════════════════ -->
+<section class="cat-section" id="berkebun" style="background:#F0FDF4">
+  <div class="cat-header">
+    <div class="cat-icon">🌱</div>
+    <div>
+      <h2 data-nav="tabb2">Berkebun</h2>
+      <p data-nav="berkebundesc">Kebun organik 10 are milik yayasan — dikelola bersama oleh seluruh anggota</p>
+    </div>
+  </div>
+  <div class="photo-grid">
+    <div class="photo-item" onclick="openLightbox('berkebun',0)">
+      <img src="images/hero-berkebun.jpg" alt="Berkebun">
+      <div class="photo-caption" data-nav="bk1cap">Anggota bersemangat merawat kebun organik</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('berkebun',1)">
+      <img src="images/berkebun-2.jpg" alt="Berkebun bersama">
+      <div class="photo-caption" data-nav="bk2cap">Berkebun bersama di lahan seluas 10 are</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('berkebun',2)">
+      <img src="images/berkebun-3.jpg" alt="Hasil panen terong">
+      <div class="photo-caption" data-nav="bk3cap">Bangga dengan hasil panen terong organik</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('berkebun',3)">
+      <img src="images/berkebun-4.jpg" alt="Merawat tanaman">
+      <div class="photo-caption" data-nav="bk4cap">Merawat tanaman setiap pagi dan sore</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ -->
+<!-- PENDIDIKAN -->
+<!-- ═══════════════════════════════════ -->
+<section class="cat-section" id="pendidikan">
+  <div class="cat-header">
+    <div class="cat-icon">📚</div>
+    <div>
+      <h2 data-nav="tabp2">Pendidikan</h2>
+      <p data-nav="pendidikandesc">Kelas komputer, bahasa Inggris, baca tulis, dan menjahit untuk anggota</p>
+    </div>
+  </div>
+  <div class="photo-grid">
+    <div class="photo-item" onclick="openLightbox('pendidikan',0)">
+      <img src="images/hero-pendidikan.jpg" alt="Kelas Bahasa Inggris">
+      <div class="photo-caption" data-nav="pd1cap">Kelas Bahasa Inggris bersama volunteer</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('pendidikan',1)">
+      <img src="images/pendidikan-2.jpg" alt="Kelas Komputer">
+      <div class="photo-caption" data-nav="pd2cap">Kelas komputer untuk anggota</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('pendidikan',2)">
+      <img src="images/pendidikan-3.jpg" alt="Kelas di YCMU">
+      <div class="photo-caption" data-nav="pd3cap">Suasana kelas di Yayasan Cahaya Mutiara Ubud</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('pendidikan',3)">
+      <img src="images/pendidikan-4.jpg" alt="Belajar bersama">
+      <div class="photo-caption" data-nav="pd4cap">Semangat belajar anggota yayasan</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ -->
+<!-- KOPI -->
+<!-- ═══════════════════════════════════ -->
+<section class="cat-section" id="kopi" style="background:#FFF7ED">
+  <div class="cat-header">
+    <div class="cat-icon">☕</div>
+    <div>
+      <h2 data-nav="tabko2">Cahaya Mutiara Coffee</h2>
+      <p data-nav="kopidesc">Produk kopi 100% Bali asli — diluncurkan 2020, bekerja sama dengan petani lokal</p>
+    </div>
+  </div>
+  <div class="photo-grid">
+    <div class="photo-item" onclick="openLightbox('kopi',0)">
+      <img src="images/hero-kopi.jpg" alt="Cahaya Mutiara Coffee">
+      <div class="photo-caption" data-nav="ko1cap">Cahaya Mutiara Coffee — 100% Kopi Bali Asli</div>
+    </div>
+    <div class="photo-item" onclick="openLightbox('kopi',1)">
+      <img src="images/kopi-2.jpg" alt="Kopi packaging">
+      <div class="photo-caption" data-nav="ko2cap">Kemasan premium Cahaya Mutiara Coffee</div>
+    </div>
+  </div>
+  <div style="margin-top:28px;background:#fff;border-radius:14px;padding:24px;border:1px solid #FDE68A;max-width:480px">
+    <p style="font-size:.88rem;color:var(--mid);line-height:1.7">
+      <strong style="color:var(--dark)" data-nav="kopiorder">Pesan Kopi CMU:</strong><br>
+      📱 <a href="https://wa.me/6282247037772" style="color:var(--purple)">+62 822 4703 7772 (WhatsApp)</a><br>
+      📘 <a href="https://www.facebook.com/Cahaya-Mutiara-Ubud" target="_blank" style="color:var(--purple)">Cahaya Mutiara Ubud</a><br>
+      📸 <a href="https://www.instagram.com/cahayamutiaraubud" target="_blank" style="color:var(--purple)">@cahayamutiaraubud</a>
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="footer-simple">
+  © 2024 Yayasan Cahaya Mutiara Ubud &nbsp;|&nbsp;
+  <a href="index.html">Beranda</a> &nbsp;|&nbsp;
+  <a href="index.html#donasi">Donasi</a> &nbsp;|&nbsp;
+  <a href="mailto:cmu.foundation@gmail.com">cmu.foundation@gmail.com</a>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-prev" onclick="event.stopPropagation();shiftLightbox(-1)">‹</button>
+  <img id="lightbox-img" src="" alt="">
+  <button class="lightbox-next" onclick="event.stopPropagation();shiftLightbox(1)">›</button>
+  <div class="lightbox-counter" id="lightbox-counter"></div>
+</div>
+
+<script>
+// ── GALLERY DATA ──
+const galleries = {
+  lukisan: [
+    { src: 'images/hero-lukisan.jpg', cap: 'Dua Penari Bali — cat akrilik di kanvas' },
+    { src: 'images/lukisan-2.jpg',    cap: 'Ikan Koi — cat pastel di linen' },
+    { src: 'images/lukisan-3.jpg',    cap: 'Kucing Merah — cat akrilik' },
+    { src: 'images/lukisan-4.jpg',    cap: 'Ganesha — cat akrilik di kanvas' },
+    { src: 'images/lukisan-5.jpg',    cap: 'Perempuan Bali — cat akrilik' },
+  ],
+  kesenian: [
+    { src: 'images/hero-kesenian.jpg', cap: 'Pentas Tari Bali di atas panggung' },
+    { src: 'images/kesenian-2.jpg',    cap: 'Group Tari Bali YCMU' },
+    { src: 'images/kesenian-3.jpg',    cap: 'Pentas Fire Dance' },
+    { src: 'images/kesenian-4.jpg',    cap: 'Kelas Jembe bersama instruktur' },
+  ],
+  olahraga: [
+    { src: 'images/hero-olahraga.jpg', cap: 'Maybank Bali Marathon — 1st Podium Wheelchair Female' },
+    { src: 'images/olahraga-2.jpg',    cap: 'Meraih medali di Bali Marathon' },
+    { src: 'images/olahraga-3.jpg',    cap: 'ASEAN Para Games 2023 — Kamboja' },
+    { src: 'images/olahraga-4.jpg',    cap: 'Podium juara ASEAN Para Games 2023' },
+  ],
+  berkebun: [
+    { src: 'images/hero-berkebun.jpg', cap: 'Anggota bersemangat merawat kebun organik' },
+    { src: 'images/berkebun-2.jpg',    cap: 'Berkebun bersama di lahan seluas 10 are' },
+    { src: 'images/berkebun-3.jpg',    cap: 'Bangga dengan hasil panen terong organik' },
+    { src: 'images/berkebun-4.jpg',    cap: 'Merawat tanaman setiap pagi dan sore' },
+  ],
+  pendidikan: [
+    { src: 'images/hero-pendidikan.jpg', cap: 'Kelas Bahasa Inggris bersama volunteer' },
+    { src: 'images/pendidikan-2.jpg',    cap: 'Kelas komputer untuk anggota' },
+    { src: 'images/pendidikan-3.jpg',    cap: 'Suasana kelas di YCMU' },
+    { src: 'images/pendidikan-4.jpg',    cap: 'Semangat belajar anggota yayasan' },
+  ],
+  kopi: [
+    { src: 'images/hero-kopi.jpg', cap: 'Cahaya Mutiara Coffee — 100% Kopi Bali Asli' },
+    { src: 'images/kopi-2.jpg',    cap: 'Kemasan premium Cahaya Mutiara Coffee' },
+  ],
+};
+
+let currentGallery = null, currentIndex = 0;
+
+function openLightbox(gallery, index) {
+  currentGallery = gallery;
+  currentIndex = index;
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox') && e.target !== document.querySelector('.lightbox-close')) return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function shiftLightbox(dir) {
+  const items = galleries[currentGallery];
+  currentIndex = (currentIndex + dir + items.length) % items.length;
+  updateLightbox();
+}
+function updateLightbox() {
+  const items = galleries[currentGallery];
+  const item = items[currentIndex];
+  document.getElementById('lightbox-img').src = item.src;
+  document.getElementById('lightbox-img').alt = item.cap;
+  document.getElementById('lightbox-counter').textContent = `${currentIndex + 1} / ${items.length}`;
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') shiftLightbox(1);
+  if (e.key === 'ArrowLeft') shiftLightbox(-1);
+});
+
+// ── ACTIVE TAB on scroll ──
+const sections = document.querySelectorAll('.cat-section');
+const tabs = document.querySelectorAll('.cat-tab');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tabs.forEach(t => t.classList.remove('active'));
+      const match = document.querySelector(`.cat-tab[href="#${e.target.id}"]`);
+      if (match) match.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// ── TRANSLATIONS ──
+const t = {
+  id: { about:"Tentang Kami", programs:"Program", achievements:"Prestasi", gallery:"Galeri", location:"Lokasi", donate:"Donasi", donatenow:"Donasi Sekarang", backhome:"Kembali ke Beranda", gallerytitle:"Galeri Kegiatan", gallerysubtitle:"Dokumentasi kegiatan dan karya Yayasan Cahaya Mutiara Ubud", tabl:"Lukisan", tabk:"Kesenian", tabo:"Olahraga", tabb:"Berkebun", tabp:"Pendidikan", tabko:"Kopi CMU", tabl2:"Lukisan", tabk2:"Kesenian", tabo2:"Olahraga", tabb2:"Berkebun", tabp2:"Pendidikan", tabko2:"Cahaya Mutiara Coffee", lukisandesc:"Karya seni lukis original oleh anggota Yayasan Cahaya Mutiara Ubud", kesenlandesc:"Tari Bali, fire dance, dan kelas jembe bersama anggota yayasan", olahragadesc:"Prestasi atlet penyandang disabilitas di tingkat nasional dan internasional", berkebundesc:"Kebun organik 10 are milik yayasan — dikelola bersama oleh seluruh anggota", pendidikandesc:"Kelas komputer, bahasa Inggris, baca tulis, dan menjahit untuk anggota", kopidesc:"Produk kopi 100% Bali asli — diluncurkan 2020, bekerja sama dengan petani lokal", kopiorder:"Pesan Kopi CMU:", luk1cap:"Dua Penari Bali", luk2cap:"Ikan Koi", luk3cap:"Kucing Merah", luk4cap:"Ganesha", luk5cap:"Perempuan Bali", kes1cap:"Pentas Tari Bali", kes2cap:"Group Tari Bali YCMU", kes3cap:"Pentas Fire Dance", kes4cap:"Kelas Jembe", ol1cap:"Maybank Bali Marathon — 1st Podium", ol2cap:"Meraih medali di Bali Marathon", ol3cap:"ASEAN Para Games 2023 — Kamboja", ol4cap:"Podium juara ASEAN Para Games 2023", bk1cap:"Merawat kebun organik", bk2cap:"Berkebun bersama", bk3cap:"Hasil panen terong organik", bk4cap:"Merawat tanaman", pd1cap:"Kelas Bahasa Inggris", pd2cap:"Kelas komputer", pd3cap:"Suasana kelas di YCMU", pd4cap:"Semangat belajar", ko1cap:"Cahaya Mutiara Coffee — 100% Kopi Bali Asli", ko2cap:"Kemasan premium" },
+  en: { about:"About Us", programs:"Programs", achievements:"Achievements", gallery:"Gallery", location:"Location", donate:"Donate", donatenow:"Donate Now", backhome:"Back to Home", gallerytitle:"Activity Gallery", gallerysubtitle:"Documentation of activities and works of Yayasan Cahaya Mutiara Ubud", tabl:"Paintings", tabk:"Arts", tabo:"Sports", tabb:"Farming", tabp:"Education", tabko:"CMU Coffee", tabl2:"Paintings", tabk2:"Arts & Culture", tabo2:"Sports", tabb2:"Organic Farming", tabp2:"Education", tabko2:"Cahaya Mutiara Coffee", lukisandesc:"Original artworks by members of Yayasan Cahaya Mutiara Ubud", kesenlandesc:"Balinese dance, fire dance, and djembe classes with foundation members", olahragadesc:"Achievements of athletes with disabilities at national and international level", berkebundesc:"10-are organic garden — managed together by all members", pendidikandesc:"Computer, English, literacy, and sewing classes for members", kopidesc:"100% original Bali coffee — launched 2020, working with local farmers", kopiorder:"Order CMU Coffee:", luk1cap:"Two Balinese Dancers", luk2cap:"Koi Fish", luk3cap:"Red Cat", luk4cap:"Ganesha", luk5cap:"Balinese Woman", kes1cap:"Balinese Dance Performance", kes2cap:"YCMU Dance Group", kes3cap:"Fire Dance Performance", kes4cap:"Djembe Class", ol1cap:"Maybank Bali Marathon — 1st Podium", ol2cap:"Medal at Bali Marathon", ol3cap:"ASEAN Para Games 2023 — Cambodia", ol4cap:"ASEAN Para Games 2023 Podium", bk1cap:"Tending the organic garden", bk2cap:"Farming together", bk3cap:"Proud harvest of organic eggplant", bk4cap:"Tending plants daily", pd1cap:"English Class with volunteer", pd2cap:"Computer class for members", pd3cap:"Classroom at YCMU", pd4cap:"Enthusiasm for learning", ko1cap:"Cahaya Mutiara Coffee — 100% Original Bali Coffee", ko2cap:"Premium packaging" },
+  ko: { about:"소개", programs:"프로그램", achievements:"성과", gallery:"갤러리", location:"위치", donate:"후원", donatenow:"지금 후원", backhome:"홈으로 돌아가기", gallerytitle:"활동 갤러리", gallerysubtitle:"야야산 차하야 무티아라 우붓의 활동 기록", tabl:"그림", tabk:"예술", tabo:"스포츠", tabb:"농업", tabp:"교육", tabko:"CMU 커피", tabl2:"그림", tabk2:"예술 & 문화", tabo2:"스포츠", tabb2:"유기농 농업", tabp2:"교육", tabko2:"차하야 무티아라 커피", lukisandesc:"야야산 차하야 무티아라 우붓 회원들의 오리지널 작품", kesenlandesc:"발리 전통춤, 파이어 댄스, 젬베 수업", olahragadesc:"국내외 장애인 운동선수의 성과", berkebundesc:"10아르 유기농 정원 — 모든 회원들이 함께 관리", pendidikandesc:"컴퓨터, 영어, 읽기쓰기, 재봉 수업", kopidesc:"100% 발리 원산지 커피 — 2020년 출시", kopiorder:"CMU 커피 주문:", luk1cap:"두 명의 발리 댄서", luk2cap:"잉어 그림", luk3cap:"빨간 고양이", luk4cap:"가네샤", luk5cap:"발리 여성", kes1cap:"발리 전통춤 공연", kes2cap:"YCMU 댄스 그룹", kes3cap:"파이어 댄스 공연", kes4cap:"젬베 수업", ol1cap:"마이뱅크 발리 마라톤 1위", ol2cap:"발리 마라톤 메달", ol3cap:"아세안 패러게임 2023 캄보디아", ol4cap:"아세안 패러게임 2023 시상대", bk1cap:"유기농 정원 가꾸기", bk2cap:"함께 농사짓기", bk3cap:"가지 수확의 기쁨", bk4cap:"매일 식물 돌보기", pd1cap:"자원봉사자와 영어 수업", pd2cap:"컴퓨터 수업", pd3cap:"YCMU 교실", pd4cap:"배움의 열정", ko1cap:"차하야 무티아라 커피", ko2cap:"프리미엄 패키지" },
+  ja: { about:"私たちについて", programs:"プログラム", achievements:"実績", gallery:"ギャラリー", location:"場所", donate:"寄付", donatenow:"今すぐ寄付", backhome:"ホームへ戻る", gallerytitle:"活動ギャラリー", gallerysubtitle:"ヤヤサン・チャハヤ・ムティアラ・ウブドの活動記録", tabl:"絵画", tabk:"芸術", tabo:"スポーツ", tabb:"農業", tabp:"教育", tabko:"CMUコーヒー", tabl2:"絵画", tabk2:"芸術・文化", tabo2:"スポーツ", tabb2:"有機農業", tabp2:"教育", tabko2:"チャハヤ・ムティアラ・コーヒー", lukisandesc:"メンバーによるオリジナル作品", kesenlandesc:"バリ舞踊、ファイアダンス、ジェンベクラス", olahragadesc:"国内外での障害者アスリートの実績", berkebundesc:"10アールの有機農園", pendidikandesc:"コンピュータ、英語、識字、裁縫クラス", kopidesc:"100%バリ産コーヒー — 2020年発売", kopiorder:"CMUコーヒー注文：", luk1cap:"バリの踊り子二人", luk2cap:"鯉の絵", luk3cap:"赤い猫", luk4cap:"ガネーシャ", luk5cap:"バリの女性", kes1cap:"バリ舞踊の公演", kes2cap:"YCMUダンスグループ", kes3cap:"ファイアダンス公演", kes4cap:"ジェンベクラス", ol1cap:"マイバンク・バリマラソン1位", ol2cap:"バリマラソンのメダル", ol3cap:"ASEANパラゲームズ2023カンボジア", ol4cap:"ASEANパラゲームズ2023表彰台", bk1cap:"有機農園の手入れ", bk2cap:"一緒に農業", bk3cap:"ナスの収穫", bk4cap:"毎日の植物の世話", pd1cap:"ボランティアと英語クラス", pd2cap:"コンピュータクラス", pd3cap:"YCMUの教室", pd4cap:"学ぶ意欲", ko1cap:"チャハヤ・ムティアラ・コーヒー", ko2cap:"プレミアムパッケージ" },
+  zh: { about:"关于我们", programs:"项目", achievements:"成就", gallery:"图库", location:"位置", donate:"捐款", donatenow:"立即捐款", backhome:"返回首页", gallerytitle:"活动图库", gallerysubtitle:"亚雅桑·查哈亚·穆蒂亚拉·乌布德的活动记录", tabl:"绘画", tabk:"艺术", tabo:"体育", tabb:"农业", tabp:"教育", tabko:"CMU咖啡", tabl2:"绘画", tabk2:"艺术与文化", tabo2:"体育", tabb2:"有机农业", tabp2:"教育", tabko2:"查哈亚穆提亚拉咖啡", lukisandesc:"成员原创艺术作品", kesenlandesc:"巴厘舞蹈、火舞和金贝鼓课", olahragadesc:"残障运动员的国内外成就", berkebundesc:"10公亩有机菜园", pendidikandesc:"电脑、英语、读写和缝纫课程", kopidesc:"100%巴厘岛原产咖啡 — 2020年上市", kopiorder:"订购CMU咖啡：", luk1cap:"两位巴厘舞者", luk2cap:"锦鲤画", luk3cap:"红猫", luk4cap:"象神", luk5cap:"巴厘女性", kes1cap:"巴厘舞蹈表演", kes2cap:"YCMU舞蹈团", kes3cap:"火舞表演", kes4cap:"金贝鼓课", ol1cap:"马来亚银行巴厘马拉松第一名", ol2cap:"巴厘马拉松奖牌", ol3cap:"2023年东南亚残奥会柬埔寨", ol4cap:"2023年东南亚残奥会领奖台", bk1cap:"照料有机菜园", bk2cap:"一起农耕", bk3cap:"茄子丰收", bk4cap:"每日护理植物", pd1cap:"志愿者英语课", pd2cap:"电脑课", pd3cap:"YCMU教室", pd4cap:"学习热情", ko1cap:"查哈亚穆提亚拉咖啡", ko2cap:"精品包装" },
+  fr: { about:"À propos", programs:"Programmes", achievements:"Réalisations", gallery:"Galerie", location:"Localisation", donate:"Don", donatenow:"Faire un don", backhome:"Retour à l'accueil", gallerytitle:"Galerie d'activités", gallerysubtitle:"Documentation des activités de Yayasan Cahaya Mutiara Ubud", tabl:"Peintures", tabk:"Arts", tabo:"Sport", tabb:"Agriculture", tabp:"Éducation", tabko:"Café CMU", tabl2:"Peintures", tabk2:"Arts & Culture", tabo2:"Sport", tabb2:"Agriculture bio", tabp2:"Éducation", tabko2:"Cahaya Mutiara Coffee", lukisandesc:"Œuvres originales par les membres de la fondation", kesenlandesc:"Danse balinaise, fire dance et cours de djembé", olahragadesc:"Réalisations d'athlètes handicapés aux niveaux national et international", berkebundesc:"Jardin bio de 10 ares géré collectivement", pendidikandesc:"Cours d'informatique, d'anglais, d'alphabétisation et de couture", kopidesc:"Café 100% balinais — lancé en 2020", kopiorder:"Commander le café CMU :", luk1cap:"Deux danseuses balinaises", luk2cap:"Carpe koï", luk3cap:"Chat rouge", luk4cap:"Ganesh", luk5cap:"Femme balinaise", kes1cap:"Spectacle de danse balinaise", kes2cap:"Groupe de danse YCMU", kes3cap:"Spectacle de fire dance", kes4cap:"Cours de djembé", ol1cap:"Marathon de Bali Maybank — 1er podium", ol2cap:"Médaille au Marathon de Bali", ol3cap:"Jeux Para ASEAN 2023 — Cambodge", ol4cap:"Podium aux Jeux Para ASEAN 2023", bk1cap:"Entretien du jardin bio", bk2cap:"Jardinage ensemble", bk3cap:"Récolte d'aubergines bio", bk4cap:"Entretien quotidien des plantes", pd1cap:"Cours d'anglais avec bénévoles", pd2cap:"Cours d'informatique", pd3cap:"Salle de classe YCMU", pd4cap:"Enthousiasme pour l'apprentissage", ko1cap:"Cahaya Mutiara Coffee", ko2cap:"Emballage premium" },
+  de: { about:"Über uns", programs:"Programme", achievements:"Erfolge", gallery:"Galerie", location:"Standort", donate:"Spende", donatenow:"Jetzt spenden", backhome:"Zurück zur Startseite", gallerytitle:"Aktivitätsgalerie", gallerysubtitle:"Dokumentation der Aktivitäten von Yayasan Cahaya Mutiara Ubud", tabl:"Gemälde", tabk:"Kunst", tabo:"Sport", tabb:"Landwirtschaft", tabp:"Bildung", tabko:"CMU-Kaffee", tabl2:"Gemälde", tabk2:"Kunst & Kultur", tabo2:"Sport", tabb2:"Biogarten", tabp2:"Bildung", tabko2:"Cahaya Mutiara Coffee", lukisandesc:"Originalkunstwerke der Mitglieder", kesenlandesc:"Balinesischer Tanz, Feuertanz und Djembe-Kurs", olahragadesc:"Leistungen von Athleten mit Behinderungen national und international", berkebundesc:"10 Ar Biogarten — gemeinsam von allen Mitgliedern gepflegt", pendidikandesc:"Computer-, Englisch-, Lese-/Schreib- und Nähkurse", kopidesc:"100% balinesischer Kaffee — seit 2020", kopiorder:"CMU-Kaffee bestellen:", luk1cap:"Zwei balinesische Tänzerinnen", luk2cap:"Koi-Fisch-Gemälde", luk3cap:"Rote Katze", luk4cap:"Ganesha", luk5cap:"Balinesische Frau", kes1cap:"Balinesische Tanzaufführung", kes2cap:"YCMU Tanzgruppe", kes3cap:"Feuertanz-Aufführung", kes4cap:"Djembe-Kurs", ol1cap:"Maybank Bali Marathon — 1. Platz", ol2cap:"Medaille beim Bali Marathon", ol3cap:"ASEAN Para Games 2023 — Kambodscha", ol4cap:"ASEAN Para Games 2023 Podium", bk1cap:"Biogarten pflegen", bk2cap:"Gemeinsam gärtnern", bk3cap:"Ernte von Bio-Auberginen", bk4cap:"Tägliche Pflanzenpflege", pd1cap:"Englischkurs mit Freiwilligen", pd2cap:"Computerkurs", pd3cap:"Unterrichtsraum im YCMU", pd4cap:"Lernbegeisterung", ko1cap:"Cahaya Mutiara Coffee", ko2cap:"Premium-Verpackung" }
+};
+
+function setLang(lang, btn) {
+  const tr = t[lang];
+  if (!tr) return;
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    const k = el.getAttribute('data-nav');
+    if (tr[k] !== undefined) el.innerHTML = tr[k];
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.documentElement.lang = lang;
+
+  // Update lightbox captions in gallery data
+  galleries.lukisan.forEach((item, i) => {
+    const keys = ['luk1cap','luk2cap','luk3cap','luk4cap','luk5cap'];
+    item.cap = tr[keys[i]] || item.cap;
+  });
+  galleries.kesenian.forEach((item, i) => {
+    const keys = ['kes1cap','kes2cap','kes3cap','kes4cap'];
+    item.cap = tr[keys[i]] || item.cap;
+  });
+  galleries.olahraga.forEach((item, i) => {
+    const keys = ['ol1cap','ol2cap','ol3cap','ol4cap'];
+    item.cap = tr[keys[i]] || item.cap;
+  });
+  galleries.berkebun.forEach((item, i) => {
+    const keys = ['bk1cap','bk2cap','bk3cap','bk4cap'];
+    item.cap = tr[keys[i]] || item.cap;
+  });
+  galleries.pendidikan.forEach((item, i) => {
+    const keys = ['pd1cap','pd2cap','pd3cap','pd4cap'];
+    item.cap = tr[keys[i]] || item.cap;
+  });
+  galleries.kopi.forEach((item, i) => {
+    const keys = ['ko1cap','ko2cap'];
+    item.cap = tr[keys[i]] || item.cap;
+  });
+}
+</script>
+</body>
+</html>
