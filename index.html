@@ -21,24 +21,55 @@
   html { scroll-behavior: smooth; }
   body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--dark); overflow-x: hidden; }
 
-  /* ── LANG SWITCHER ── */
-  .lang-bar {
+  /* ── LANGUAGE DROPDOWN (floating) ── */
+  .lang-float {
+    position: fixed; bottom: 24px; right: 24px;
+    z-index: 999;
+  }
+  .lang-toggle {
+    display: flex; align-items: center; gap: 6px;
     background: var(--purple-deep);
-    padding: 6px 5vw;
-    display: flex; align-items: center; justify-content: flex-end; gap: 4px;
-    flex-wrap: wrap;
+    color: #fff; border: none; border-radius: 100px;
+    padding: 9px 16px; font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+    cursor: pointer; box-shadow: 0 4px 20px rgba(76,29,149,0.45);
+    transition: background .2s, transform .15s;
+    white-space: nowrap;
   }
-  .lang-btn {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.75);
-    border-radius: 5px; padding: 3px 10px;
-    font-size: 0.72rem; font-family: 'DM Sans', sans-serif;
-    cursor: pointer; transition: all .15s; white-space: nowrap;
+  .lang-toggle:hover { background: var(--purple); transform: scale(1.04); }
+  .lang-arrow { font-size: 0.7rem; transition: transform .25s; }
+  .lang-arrow.open { transform: rotate(180deg); }
+  .lang-menu {
+    position: absolute; bottom: calc(100% + 8px); right: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    min-width: 160px;
+    opacity: 0; transform: translateY(8px) scale(0.97);
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    transform-origin: bottom right;
   }
-  .lang-btn:hover, .lang-btn.active {
-    background: rgba(255,255,255,0.25);
-    color: #fff; border-color: rgba(255,255,255,0.5);
+  .lang-menu.open {
+    opacity: 1; transform: translateY(0) scale(1);
+    pointer-events: all;
+  }
+  .lang-menu button {
+    display: block; width: 100%;
+    padding: 10px 16px; text-align: left;
+    background: none; border: none;
+    font-size: 0.85rem; font-family: 'DM Sans', sans-serif;
+    color: var(--dark); cursor: pointer;
+    transition: background .15s;
+    border-bottom: 1px solid var(--border);
+  }
+  .lang-menu button:last-child { border-bottom: none; }
+  .lang-menu button:hover { background: var(--purple-light); }
+  .lang-menu button.active-lang {
+    background: var(--purple-light); color: var(--purple);
+    font-weight: 600;
   }
 
   /* ── NAV ── */
@@ -269,15 +300,22 @@
 </head>
 <body>
 
-<!-- LANGUAGE BAR -->
-<div class="lang-bar">
-  <button class="lang-btn active" onclick="setLang('id')">🇮🇩 Indonesia</button>
-  <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
-  <button class="lang-btn" onclick="setLang('ko')">🇰🇷 한국어</button>
-  <button class="lang-btn" onclick="setLang('ja')">🇯🇵 日本語</button>
-  <button class="lang-btn" onclick="setLang('zh')">🇨🇳 中文</button>
-  <button class="lang-btn" onclick="setLang('fr')">🇫🇷 Français</button>
-  <button class="lang-btn" onclick="setLang('de')">🇩🇪 Deutsch</button>
+<!-- LANGUAGE DROPDOWN - floats bottom right -->
+<div class="lang-float" id="langFloat">
+  <button class="lang-toggle" id="langToggle" onclick="toggleLangMenu()" aria-label="Change language">
+    <span id="langFlag">🇮🇩</span>
+    <span id="langName">ID</span>
+    <span class="lang-arrow" id="langArrow">▾</span>
+  </button>
+  <div class="lang-menu" id="langMenu">
+    <button onclick="setLang('id','🇮🇩','ID')">🇮🇩 Indonesia</button>
+    <button onclick="setLang('en','🇬🇧','EN')">🇬🇧 English</button>
+    <button onclick="setLang('ko','🇰🇷','KO')">🇰🇷 한국어</button>
+    <button onclick="setLang('ja','🇯🇵','JA')">🇯🇵 日本語</button>
+    <button onclick="setLang('zh','🇨🇳','ZH')">🇨🇳 中文</button>
+    <button onclick="setLang('fr','🇫🇷','FR')">🇫🇷 Français</button>
+    <button onclick="setLang('de','🇩🇪','DE')">🇩🇪 Deutsch</button>
+  </div>
 </div>
 
 <!-- NAV -->
@@ -509,7 +547,7 @@
         <div class="loc-icon">✉️</div>
         <div>
           <h4>Email</h4>
-          <p><a href="/cdn-cgi/l/email-protection#f99a948cd79f968c979d988d909697b99e94989095d79a9694"><span class="__cf_email__" data-cfemail="20434d550e464f554e444154494f4e60474d41494c0e434f4d">[email&#160;protected]</span></a></p>
+          <p><a href="mailto:cmu.foundation@gmail.com"><span class="__cf_email__" data-cfemail="20434d550e464f554e444154494f4e60474d41494c0e434f4d">cmu.foundation@gmail.com</span></a></p>
         </div>
       </div>
       <div class="loc-item">
@@ -543,7 +581,7 @@
       <a href="https://wa.me/6282247037772" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;font-weight:500;text-decoration:none">
         💬 <span data-nav="watext">WhatsApp Kami</span>
       </a>
-      <a href="/cdn-cgi/l/email-protection#0c6f6179226a637962686d786563624c6b616d6560226f6361" style="display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;font-weight:500;text-decoration:none">
+      <a href="mailto:cmu.foundation@gmail.com" style="display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;padding:10px 18px;border-radius:8px;font-size:.85rem;font-weight:500;text-decoration:none">
         ✉️ <span data-nav="emailtext">Email Kami</span>
       </a>
     </div>
@@ -578,7 +616,7 @@
         </div>
       </div>
       <div class="donation-divider"><span data-nav="orvia">atau hubungi kami via</span></div>
-      <a href="/cdn-cgi/l/email-protection#640709114a020b110a0005100d0b0a240309050d084a070b095b1711060e01071059200b0a05100d0b0a415654020b164156543d27293142060b001d592c0108080b4156274156542d415654130b110800415654080d0f01415654100b415654000b0a051001415654100b4156543d051d0517050a41565427050c051d054156542911100d051605415654310611004a" class="paypal-btn">
+      <a href="mailto:cmu.foundation@gmail.com" class="paypal-btn">
         ✉️ <span data-nav="confirmemail">Konfirmasi Donasi via Email</span>
       </a>
       <div class="contact-box">
@@ -616,7 +654,7 @@
     <ul>
       <li><a href="tel:+62361902195">(0361) 902195</a></li>
       <li><a href="tel:+6282247037772">+62 822 4703 7772</a></li>
-      <li><a href="/cdn-cgi/l/email-protection#82e1eff7ace4edf7ece6e3f6ebedecc2e5efe3ebeeace1edef"><span class="__cf_email__" data-cfemail="f0939d85de969f859e949184999f9eb0979d91999cde939f9d">[email&#160;protected]</span></a></li>
+      <li><a href="mailto:cmu.foundation@gmail.com"><span class="__cf_email__" data-cfemail="f0939d85de969f859e949184999f9eb0979d91999cde939f9d">cmu.foundation@gmail.com</span></a></li>
       <li><a href="https://www.instagram.com/cahayamutiaraubud" target="_blank">@cahayamutiaraubud</a></li>
     </ul>
   </div>
@@ -625,7 +663,7 @@
   © 2024 Yayasan Cahaya Mutiara Ubud. <span data-nav="rights">Semua hak dilindungi.</span> &nbsp;|&nbsp; <span data-nav="madewith">Dibuat dengan ♥ untuk penyandang disabilitas Bali.</span>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ── TRANSLATION DATA ──
 const translations = {
   id: {

@@ -21,17 +21,18 @@
   html { scroll-behavior: smooth; }
   body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--dark); }
 
-  /* ── LANG BAR ── */
-  .lang-bar {
-    background: var(--purple-deep); padding: 6px 5vw;
-    display: flex; align-items: center; justify-content: flex-end; gap: 4px; flex-wrap: wrap;
-  }
-  .lang-btn {
-    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.75); border-radius: 5px; padding: 3px 10px;
-    font-size: 0.72rem; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all .15s;
-  }
-  .lang-btn:hover, .lang-btn.active { background: rgba(255,255,255,0.25); color: #fff; border-color: rgba(255,255,255,0.5); }
+  /* ── LANGUAGE DROPDOWN (floating) ── */
+  .lang-float { position: fixed; bottom: 24px; right: 24px; z-index: 999; }
+  .lang-toggle { display: flex; align-items: center; gap: 6px; background: var(--purple-deep); color: #fff; border: none; border-radius: 100px; padding: 9px 16px; font-size: 0.82rem; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; box-shadow: 0 4px 20px rgba(76,29,149,0.45); transition: background .2s, transform .15s; white-space: nowrap; }
+  .lang-toggle:hover { background: var(--purple); transform: scale(1.04); }
+  .lang-arrow { font-size: 0.7rem; transition: transform .25s; }
+  .lang-arrow.open { transform: rotate(180deg); }
+  .lang-menu { position: absolute; bottom: calc(100% + 8px); right: 0; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); border: 1px solid var(--border); overflow: hidden; min-width: 160px; opacity: 0; transform: translateY(8px) scale(0.97); pointer-events: none; transition: opacity .2s, transform .2s; transform-origin: bottom right; }
+  .lang-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
+  .lang-menu button { display: block; width: 100%; padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; font-family: 'DM Sans', sans-serif; color: var(--dark); cursor: pointer; transition: background .15s; border-bottom: 1px solid var(--border); }
+  .lang-menu button:last-child { border-bottom: none; }
+  .lang-menu button:hover { background: var(--purple-light); }
+  .lang-menu button.active-lang { background: var(--purple-light); color: var(--purple); font-weight: 600; }
 
   /* ── NAV ── */
   nav {
@@ -182,15 +183,7 @@
 <body>
 
 <!-- LANG BAR -->
-<div class="lang-bar">
-  <button class="lang-btn active" onclick="setLang('id',this)">🇮🇩 Indonesia</button>
-  <button class="lang-btn" onclick="setLang('en',this)">🇬🇧 English</button>
-  <button class="lang-btn" onclick="setLang('ko',this)">🇰🇷 한국어</button>
-  <button class="lang-btn" onclick="setLang('ja',this)">🇯🇵 日本語</button>
-  <button class="lang-btn" onclick="setLang('zh',this)">🇨🇳 中文</button>
-  <button class="lang-btn" onclick="setLang('fr',this)">🇫🇷 Français</button>
-  <button class="lang-btn" onclick="setLang('de',this)">🇩🇪 Deutsch</button>
-</div>
+<!-- floating lang dropdown - added via JS below -->
 
 <!-- NAV -->
 <nav>
@@ -531,15 +524,36 @@ const t = {
   de: { about:"Über uns", programs:"Programme", achievements:"Erfolge", gallery:"Galerie", location:"Standort", donate:"Spende", donatenow:"Jetzt spenden", backhome:"Zurück zur Startseite", gallerytitle:"Aktivitätsgalerie", gallerysubtitle:"Dokumentation der Aktivitäten von Yayasan Cahaya Mutiara Ubud", tabl:"Gemälde", tabk:"Kunst", tabo:"Sport", tabb:"Landwirtschaft", tabp:"Bildung", tabko:"CMU-Kaffee", tabl2:"Gemälde", tabk2:"Kunst & Kultur", tabo2:"Sport", tabb2:"Biogarten", tabp2:"Bildung", tabko2:"Cahaya Mutiara Coffee", lukisandesc:"Originalkunstwerke der Mitglieder", kesenlandesc:"Balinesischer Tanz, Feuertanz und Djembe-Kurs", olahragadesc:"Leistungen von Athleten mit Behinderungen national und international", berkebundesc:"10 Ar Biogarten — gemeinsam von allen Mitgliedern gepflegt", pendidikandesc:"Computer-, Englisch-, Lese-/Schreib- und Nähkurse", kopidesc:"100% balinesischer Kaffee — seit 2020", kopiorder:"CMU-Kaffee bestellen:", luk1cap:"Zwei balinesische Tänzerinnen", luk2cap:"Koi-Fisch-Gemälde", luk3cap:"Rote Katze", luk4cap:"Ganesha", luk5cap:"Balinesische Frau", kes1cap:"Balinesische Tanzaufführung", kes2cap:"YCMU Tanzgruppe", kes3cap:"Feuertanz-Aufführung", kes4cap:"Djembe-Kurs", ol1cap:"Maybank Bali Marathon — 1. Platz", ol2cap:"Medaille beim Bali Marathon", ol3cap:"ASEAN Para Games 2023 — Kambodscha", ol4cap:"ASEAN Para Games 2023 Podium", bk1cap:"Biogarten pflegen", bk2cap:"Gemeinsam gärtnern", bk3cap:"Ernte von Bio-Auberginen", bk4cap:"Tägliche Pflanzenpflege", pd1cap:"Englischkurs mit Freiwilligen", pd2cap:"Computerkurs", pd3cap:"Unterrichtsraum im YCMU", pd4cap:"Lernbegeisterung", ko1cap:"Cahaya Mutiara Coffee", ko2cap:"Premium-Verpackung" }
 };
 
-function setLang(lang, btn) {
+function toggleLangMenu() {
+  var menu = document.getElementById('langMenu');
+  var arrow = document.getElementById('langArrow');
+  menu.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  var float = document.getElementById('langFloat');
+  if (float && !float.contains(e.target)) {
+    document.getElementById('langMenu').classList.remove('open');
+    document.getElementById('langArrow').classList.remove('open');
+  }
+});
+
+function setLang(lang, flag, code) {
   const tr = t[lang];
   if (!tr) return;
   document.querySelectorAll('[data-nav]').forEach(el => {
     const k = el.getAttribute('data-nav');
     if (tr[k] !== undefined) el.innerHTML = tr[k];
   });
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if (flag) document.getElementById('langFlag').textContent = flag;
+  if (code) document.getElementById('langName').textContent = code;
+  document.querySelectorAll('.lang-menu button').forEach(b => b.classList.remove('active-lang'));
+  const order = ['id','en','ko','ja','zh','fr','de'];
+  const idx = order.indexOf(lang);
+  const btns = document.querySelectorAll('.lang-menu button');
+  if (idx >= 0 && btns[idx]) btns[idx].classList.add('active-lang');
+  document.getElementById('langMenu').classList.remove('open');
+  document.getElementById('langArrow').classList.remove('open');
   document.documentElement.lang = lang;
 
   // Update lightbox captions in gallery data
@@ -569,5 +583,23 @@ function setLang(lang, btn) {
   });
 }
 </script>
+<!-- LANGUAGE FLOAT DROPDOWN -->
+<div class="lang-float" id="langFloat">
+  <button class="lang-toggle" id="langToggle" onclick="toggleLangMenu()" aria-label="Change language">
+    <span id="langFlag">🇮🇩</span>
+    <span id="langName">ID</span>
+    <span class="lang-arrow" id="langArrow">▾</span>
+  </button>
+  <div class="lang-menu" id="langMenu">
+    <button onclick="setLang('id','🇮🇩','ID')">🇮🇩 Indonesia</button>
+    <button onclick="setLang('en','🇬🇧','EN')">🇬🇧 English</button>
+    <button onclick="setLang('ko','🇰🇷','KO')">🇰🇷 한국어</button>
+    <button onclick="setLang('ja','🇯🇵','JA')">🇯🇵 日本語</button>
+    <button onclick="setLang('zh','🇨🇳','ZH')">🇨🇳 中文</button>
+    <button onclick="setLang('fr','🇫🇷','FR')">🇫🇷 Français</button>
+    <button onclick="setLang('de','🇩🇪','DE')">🇩🇪 Deutsch</button>
+  </div>
+</div>
+
 </body>
 </html>
